@@ -19,9 +19,26 @@ fn main() {
     let mut window: GlutinWindow = settings.build().expect("Error creating window");
     let mut gl = GlGraphics::new(opengl);
     let ref mut glyphs = GlyphCache::new("assets/PressStart2P-Regular.ttf", (), TextureSettings::new()).expect("Error loading font");
-   
-    let mut player_x = 224.0;
-    let mut player_y = 224.0;
+
+    #[derive(Clone)]
+    struct Entity {
+        x: i8,
+        y: i8,
+        tile: char,
+    }
+
+    impl Entity {
+        pub fn new(x: i8, y: i8, tile: char) -> Self {
+            Entity {x, y, tile}
+        }
+
+        pub fn move_self(&mut self, dx: i8, dy: i8) {
+            self.x += dx;
+            self.y += dy;
+        }
+    }
+
+    let mut player :Entity = Entity::new(4, 4, '@');
 
     let mut events = Events::new(EventSettings::new());
     while let Some(e) = events.next(&mut window) {
@@ -30,9 +47,9 @@ fn main() {
                 graphics::clear([0.0, 0.0, 1.0, 1.0], g);
                 use graphics::Transformed;
                     graphics::Image::new_color([0.0, 0.0, 0.0, 1.0]).draw(
-                        glyphs.character(32, '@').unwrap().texture,
+                        glyphs.character(32, player.tile).unwrap().texture,
                         &c.draw_state,
-                        c.transform.trans(player_x, player_y),
+                        c.transform.trans(player.x as f64 * 32.0, player.y as f64 * 32.0),
                         g
                     );
             });
@@ -41,10 +58,10 @@ fn main() {
         if let Some(k) = e.button_args() {
             if k.state == ButtonState::Press {
                 match k.button {
-                    Button::Keyboard(Key::Up) => player_y -= 32.0,
-                    Button::Keyboard(Key::Down) => player_y += 32.0,
-                    Button::Keyboard(Key::Left) => player_x -= 32.0,
-                    Button::Keyboard(Key::Right) => player_x += 32.0,
+                    Button::Keyboard(Key::Up) => player.move_self(0, -1),
+                    Button::Keyboard(Key::Down) => player.move_self(0, 1),
+                    Button::Keyboard(Key::Left) => player.move_self(-1, 0),
+                    Button::Keyboard(Key::Right) => player.move_self(1, 0),
                     _ => (),
                 }
             }
