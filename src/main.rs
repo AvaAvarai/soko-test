@@ -3,24 +3,9 @@ extern crate piston_window;
 
 use piston_window::*;
 
-const TILE_SIZE :f64 = 50.0;
+mod entity;
 
-struct Entity {
-    x: i32,
-    y: i32,
-    color: [f32;4]
-}
-
-impl Entity {
-    pub fn new(x: i32, y: i32, color: [f32;4]) -> Self {
-        Entity {x, y, color}
-    }
-
-    pub fn move_self(&mut self, dx: i32, dy: i32) {
-        self.x += dx;
-        self.y += dy;
-    }
-}
+const TILE_SIZE :f64 = 32.0;
 
 fn main() {
     let opengl = OpenGL::V3_2;
@@ -30,31 +15,35 @@ fn main() {
         .build()
         .unwrap();
 
-    let mut player :Entity = Entity::new(2, 2, [1.0;4]);
-    let mut moveable_box :Entity = Entity::new(6, 2, [0.0, 1.0, 0.0, 1.0]);
-   
+    let mut player: entity::Entity = entity::Entity::new(2, 2, [1.0; 4]);
+    let mut moveable_box: entity::Entity = entity::Entity::new(6, 2, [0.0, 1.0, 0.0, 1.0]);
+
     let mut events = Events::new(EventSettings::new());
     
     while let Some(e) = events.next(&mut window) {
         window.draw_2d(&e, |c, g, _| {
             clear([0.0, 0.0, 1.0, 1.0], g);
             
+            let (player_x, player_y) = player.get_coords();
+
             // Draw Player
             let trans = c.transform.trans(
-                player.x as f64 * TILE_SIZE,
-                player.y as f64 * TILE_SIZE
+                *player_x as f64 * TILE_SIZE,
+                *player_y as f64 * TILE_SIZE
             );
-            rectangle(player.color,
+            rectangle(*player.get_color(),
                 [0.0, 0.0, TILE_SIZE, TILE_SIZE],
                 trans,
                 g);
 
+            let (moveable_box_x, moveable_box_y) = moveable_box.get_coords();
+
             // Draw Moveable_Box
             let trans = c.transform.trans(
-                moveable_box.x as f64 * TILE_SIZE,
-                moveable_box.y as f64 * TILE_SIZE
+                *moveable_box_x as f64 * TILE_SIZE,
+                *moveable_box_y as f64 * TILE_SIZE
             );
-            rectangle(moveable_box.color,
+            rectangle(*moveable_box.get_color(),
                 [0.0, 0.0, TILE_SIZE, TILE_SIZE],
                 trans,
                 g);
