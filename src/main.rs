@@ -1,59 +1,64 @@
 //! A test at creating a Sokoban style game in Rust.
-extern crate glutin_window;
-extern crate piston;
+extern crate piston_window;
 
-extern crate graphics;
-extern crate opengl_graphics;
+use piston_window::*;
 
-use glutin_window::GlutinWindow;
-use piston::WindowSettings;
-use piston::event_loop::{EventSettings, Events};
-use piston::input::{Button, ButtonState, Key};
-use piston::{ButtonEvent, RenderEvent};
-use opengl_graphics::{GlGraphics, GlyphCache, OpenGL, TextureSettings};
-use graphics::character::CharacterCache;
+const TILE_SIZE :f64 = 50.0;
+
+struct Entity {
+    x: i32,
+    y: i32,
+    color: [f32;4]
+}
+
+impl Entity {
+    pub fn new(x: i32, y: i32, color: [f32;4]) -> Self {
+        Entity {x, y, color}
+    }
+
+    pub fn move_self(&mut self, dx: i32, dy: i32) {
+        self.x += dx;
+        self.y += dy;
+    }
+}
 
 fn main() {
     let opengl = OpenGL::V3_2;
-    let settings = WindowSettings::new("soko-test", [512; 2]).exit_on_esc(true);
-    let mut window: GlutinWindow = settings.build().expect("Error creating window");
-    let mut gl = GlGraphics::new(opengl);
-    let ref mut glyphs = GlyphCache::new("assets/PressStart2P-Regular.ttf", (), TextureSettings::new()).expect("Error loading font");
+    let mut window: PistonWindow = WindowSettings::new("soko-test", [512; 2])
+        .exit_on_esc(true)
+        .graphics_api(opengl)
+        .build()
+        .unwrap();
 
-    #[derive(Clone)]
-    struct Entity {
-        x: i8,
-        y: i8,
-        tile: char,
-    }
-
-    impl Entity {
-        pub fn new(x: i8, y: i8, tile: char) -> Self {
-            Entity {x, y, tile}
-        }
-
-        pub fn move_self(&mut self, dx: i8, dy: i8) {
-            self.x += dx;
-            self.y += dy;
-        }
-    }
-
-    let mut player :Entity = Entity::new(4, 4, '@');
-
+    let mut player :Entity = Entity::new(2, 2, [1.0;4]);
+    let mut moveable_box :Entity = Entity::new(6, 2, [0.0, 1.0, 0.0, 1.0]);
+   
     let mut events = Events::new(EventSettings::new());
+    
     while let Some(e) = events.next(&mut window) {
-        if let Some(r) = e.render_args() {
-            gl.draw(r.viewport(), |c, g| {
-                graphics::clear([0.0, 0.0, 1.0, 1.0], g);
-                use graphics::Transformed;
-                    graphics::Image::new_color([0.0, 0.0, 0.0, 1.0]).draw(
-                        glyphs.character(32, player.tile).unwrap().texture,
-                        &c.draw_state,
-                        c.transform.trans(player.x as f64 * 32.0, player.y as f64 * 32.0),
-                        g
-                    );
-            });
-        }
+        window.draw_2d(&e, |c, g, _| {
+            clear([0.0, 0.0, 1.0, 1.0], g);
+            
+            // Draw Player
+            let trans = c.transform.trans(
+                player.x as f64 * TILE_SIZE,
+                player.y as f64 * TILE_SIZE
+            );
+            rectangle(player.color,
+                [0.0, 0.0, TILE_SIZE, TILE_SIZE],
+                trans,
+                g);
+
+            // Draw Moveable_Box
+            let trans = c.transform.trans(
+                moveable_box.x as f64 * TILE_SIZE,
+                moveable_box.y as f64 * TILE_SIZE
+            );
+            rectangle(moveable_box.color,
+                [0.0, 0.0, TILE_SIZE, TILE_SIZE],
+                trans,
+                g);
+        });
 
         if let Some(k) = e.button_args() {
             if k.state == ButtonState::Press {
@@ -67,4 +72,4 @@ fn main() {
             }
         }
     }
-} 
+}
