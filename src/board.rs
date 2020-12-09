@@ -21,6 +21,7 @@ impl Board {
         test_x += dx;
         test_y += dy;
 
+        // Player-Wall Collision
         for wall in self.get_walls() {
             let (wall_x, wall_y) = wall.get_coords();
             if test_x == wall_x && test_y == wall_y {
@@ -28,6 +29,24 @@ impl Board {
             }
         }
 
+        // Player-Box Movement
+        for moveable_box in self.boxes.iter_mut() {
+            let (box_x, box_y) = moveable_box.get_coords();
+            if test_x == box_x && test_y == box_y {
+                let (mut box_test_x, mut box_test_y) = moveable_box.get_coords();
+                box_test_x += dx;
+                box_test_y += dy;
+                for wall in self.walls.iter_mut() {
+                    let (wall_x, wall_y) = wall.get_coords();
+                    if box_test_x == wall_x && box_test_y == wall_y {
+                        return
+                    }
+                }
+                moveable_box.move_self(dx, dy);
+            }
+        }
+
+        // Player-Empty Movement
         self.player.move_self(dx, dy);
     }
 
