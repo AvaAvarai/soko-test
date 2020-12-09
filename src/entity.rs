@@ -14,11 +14,11 @@ impl Entity {
         self.y += dy;
     }
 
-    pub fn get_coords(&self) -> (&i32, &i32) {
-        (&self.x, &self.y)
+    pub fn get_coords(&self) ->  (i32, i32) {
+        (self.x, self.y)
     }
 
-    pub fn get_color(&self) -> &[f32; 4] {
-        &self.color
+    pub fn get_color(&self) -> [f32; 4] {
+        self.color
     }
 }

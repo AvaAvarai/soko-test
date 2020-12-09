@@ -20,7 +20,8 @@ fn main() {
     let player: entity::Entity = entity::Entity::new(2, 2, [1.0; 4]);
     let first_box: entity::Entity = entity::Entity::new(6, 2, [0.0, 1.0, 0.0, 1.0]);
     let first_goal: entity::Entity = entity::Entity::new(6, 4, [1.0, 0.0, 0.0, 1.0]);
-    let mut current_level: board::Board = board::Board::new(player, vec![first_box], vec![first_goal], vec![]); 
+    let test_wall: entity::Entity = entity::Entity::new(0, 0, [0.0, 0.0, 0.0, 1.0]);
+    let mut current_level: board::Board = board::Board::new(player, vec![first_box], vec![first_goal], vec![test_wall]); 
 
     let mut events = Events::new(EventSettings::new());
     while let Some(e) = events.next(&mut window) {
@@ -31,10 +32,10 @@ fn main() {
             let (player_x, player_y) = current_level.get_player().get_coords();
             
             let trans = c.transform.trans(
-                *player_x as f64 * TILE_SIZE,
-                *player_y as f64 * TILE_SIZE
+                player_x as f64 * TILE_SIZE,
+                player_y as f64 * TILE_SIZE
             );
-            rectangle(*current_level.get_player().get_color(),
+            rectangle(current_level.get_player().get_color(),
                 [0.0, 0.0, TILE_SIZE, TILE_SIZE],
                 trans,
                 g);
@@ -43,13 +44,39 @@ fn main() {
             for moveable_box in current_level.get_boxes() {
                 let (moveable_box_x, moveable_box_y) = moveable_box.get_coords();
                 let trans = c.transform.trans(
-                    *moveable_box_x as f64 * TILE_SIZE,
-                    *moveable_box_y as f64 * TILE_SIZE
+                    moveable_box_x as f64 * TILE_SIZE,
+                    moveable_box_y as f64 * TILE_SIZE
                 );
-                rectangle(*moveable_box.get_color(),
+                rectangle(moveable_box.get_color(),
                     [0.0, 0.0, TILE_SIZE, TILE_SIZE],
                     trans,
                     g);
+            }
+
+            // Draw Goals
+            for game_goal in current_level.get_goals() {
+                let (game_goal_x, game_goal_y) = game_goal.get_coords();
+                let trans = c.transform.trans(
+                    game_goal_x as f64 * TILE_SIZE,
+                    game_goal_y as f64 * TILE_SIZE
+                );
+                rectangle(game_goal.get_color(),
+                    [0.0, 0.0, TILE_SIZE, TILE_SIZE],
+                    trans,
+                    g)
+            }
+
+            // Draw Walls
+            for board_wall in current_level.get_walls() {
+                let (board_wall_x, board_wall_y) = board_wall.get_coords();
+                let trans = c.transform.trans(
+                    board_wall_x as f64 * TILE_SIZE,
+                    board_wall_y as f64 * TILE_SIZE
+                );
+                rectangle(board_wall.get_color(),
+                    [0.0, 0.0, TILE_SIZE, TILE_SIZE],
+                    trans,
+                    g)
             }
         });
 

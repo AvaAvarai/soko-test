@@ -1,10 +1,10 @@
 use super::entity;
 
 pub struct Board {
-    player: entity::Entity,     // Controllable Entity
-    boxes: Vec<entity::Entity>, // Interactable Entity
-    goals: Vec<entity::Entity>, // Static Game Object
-    walls: Vec<entity::Entity>  // Static Game Object
+    player: entity::Entity,
+    boxes: Vec<entity::Entity>,
+    goals: Vec<entity::Entity>,
+    walls: Vec<entity::Entity>
 }
 
 impl Board {
@@ -22,5 +22,13 @@ impl Board {
 
     pub fn get_boxes(&self) -> &Vec<entity::Entity> {
         &self.boxes
+    }
+
+    pub fn get_goals(&self) -> &Vec<entity::Entity> {
+        &self.goals
+    }
+
+    pub fn get_walls(&self) -> &Vec<entity::Entity> {
+        &self.walls
     }
 }
