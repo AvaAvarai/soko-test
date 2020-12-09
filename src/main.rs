@@ -1,4 +1,4 @@
-//! A test at creating a Sokoban style game in Rust.
+//! An attempt at creating a Sokoban-style puzzle game in Rust with the Piston game engine. 
 extern crate piston_window;
 
 use piston_window::*;
@@ -39,29 +39,17 @@ fn main() {
         window.draw_2d(&e, |c, g, _| {
             clear([0.0, 0.0, 1.0, 1.0], g);
 
-            // Draw Player     
-            let (player_x, player_y) = current_level.get_player().get_coords();
-            
-            let trans = c.transform.trans(
-                player_x as f64 * TILE_SIZE,
-                player_y as f64 * TILE_SIZE
-            );
-            rectangle(current_level.get_player().get_color(),
-                TILE_RECT,
-                trans,
-                g);
-
-            // Draw Boxes
-            for moveable_box in current_level.get_boxes() {
-                let (moveable_box_x, moveable_box_y) = moveable_box.get_coords();
+            // Draw Walls
+            for board_wall in current_level.get_walls() {
+                let (board_wall_x, board_wall_y) = board_wall.get_coords();
                 let trans = c.transform.trans(
-                    moveable_box_x as f64 * TILE_SIZE,
-                    moveable_box_y as f64 * TILE_SIZE
+                    board_wall_x as f64 * TILE_SIZE,
+                    board_wall_y as f64 * TILE_SIZE
                 );
-                rectangle(moveable_box.get_color(),
+                rectangle(board_wall.get_color(),
                     TILE_RECT,
                     trans,
-                    g);
+                    g)
             }
 
             // Draw Goals
@@ -77,18 +65,30 @@ fn main() {
                     g)
             }
 
-            // Draw Walls
-            for board_wall in current_level.get_walls() {
-                let (board_wall_x, board_wall_y) = board_wall.get_coords();
+            // Draw Boxes
+            for moveable_box in current_level.get_boxes() {
+                let (moveable_box_x, moveable_box_y) = moveable_box.get_coords();
                 let trans = c.transform.trans(
-                    board_wall_x as f64 * TILE_SIZE,
-                    board_wall_y as f64 * TILE_SIZE
+                    moveable_box_x as f64 * TILE_SIZE,
+                    moveable_box_y as f64 * TILE_SIZE
                 );
-                rectangle(board_wall.get_color(),
+                rectangle(moveable_box.get_color(),
                     TILE_RECT,
                     trans,
-                    g)
+                    g);
             }
+
+            // Draw Player     
+            let (player_x, player_y) = current_level.get_player().get_coords();
+            
+            let trans = c.transform.trans(
+                player_x as f64 * TILE_SIZE,
+                player_y as f64 * TILE_SIZE
+            );
+            rectangle(current_level.get_player().get_color(),
+                TILE_RECT,
+                trans,
+                g);
         });
 
         if let Some(k) = e.button_args() {

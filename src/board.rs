@@ -43,6 +43,12 @@ impl Board {
                     }
                 }
                 moveable_box.move_self(dx, dy);
+                for goal in self.goals.iter_mut() {
+                    let (goal_x, goal_y) = goal.get_coords();
+                    if box_test_x == goal_x && box_test_y == goal_y {
+                        println!("BOX MET GOAL!");
+                    }
+                }
             }
         }
 
