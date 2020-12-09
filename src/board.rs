@@ -17,6 +17,17 @@ impl Board {
     }
 
     pub fn move_player(&mut self, dx: i32, dy: i32) {
+        let (mut test_x, mut test_y) = self.get_player().get_coords();
+        test_x += dx;
+        test_y += dy;
+
+        for wall in self.get_walls() {
+            let (wall_x, wall_y) = wall.get_coords();
+            if test_x == wall_x && test_y == wall_y {
+                return
+            }
+        }
+
         self.player.move_self(dx, dy);
     }
 

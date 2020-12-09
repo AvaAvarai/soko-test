@@ -1,20 +1,25 @@
 # soko-test
 
-A test at creating a Sokoban style game in Rust.
+My first Rust and Piston project, an attempt at creating a Sokoban-style puzzle game in Rust with the [Piston game engine](https://www.piston.rs). 
 
-## Changelog
+#### Requirements
 
-- v0.1.0 -- Prototyping
-- v0.1.1 -- First x64_86-pc-windows binary
+To Run -- OpenGL v3.2 or better.
 
-## Running With Binary
+#### Changelog
 
-- Donwload the binary  
-- Run the binary
+- **v0.1.0** -- Windowing and Movement Prototyping  
+- **v0.1.1** -- First x64_86-pc-windows binary  
+- **v0.2.0** -- *(WIP)* Entity Interactions
+
+#### Running With Binary
+
+- Donwload the binary for your system from your chosen release.
+- Run the binary, all binaries should run natively.
 
 **Current Dev Focus:** *x64_86-pc-windows*
 
-## Running Without Binary
+#### Running Without Binary
 
 **Requires both Rust and the Cargo package manager.**
 

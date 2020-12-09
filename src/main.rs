@@ -6,7 +6,8 @@ use piston_window::*;
 mod entity;
 mod board;
 
-const TILE_SIZE :f64 = 32.0;
+const TILE_SIZE: f64 = 32.0;
+const TILE_RECT: [f64; 4] = [0.0, 0.0, TILE_SIZE, TILE_SIZE];
 
 fn main() {
     let opengl = OpenGL::V3_2;
@@ -20,8 +21,18 @@ fn main() {
     let player: entity::Entity = entity::Entity::new(2, 2, [1.0; 4]);
     let first_box: entity::Entity = entity::Entity::new(6, 2, [0.0, 1.0, 0.0, 1.0]);
     let first_goal: entity::Entity = entity::Entity::new(6, 4, [1.0, 0.0, 0.0, 1.0]);
-    let test_wall: entity::Entity = entity::Entity::new(0, 0, [0.0, 0.0, 0.0, 1.0]);
-    let mut current_level: board::Board = board::Board::new(player, vec![first_box], vec![first_goal], vec![test_wall]); 
+    let mut test_walls = vec![];
+    for num in 0..11 {
+        let test_wall: entity::Entity = entity::Entity::new(0, num, [0.0, 0.0, 0.0, 1.0]);
+        let test_wall2: entity::Entity = entity::Entity::new(num, 0, [0.0, 0.0, 0.0, 1.0]);
+        let test_wall3: entity::Entity = entity::Entity::new(num, 10, [0.0, 0.0, 0.0, 1.0]);
+        let test_wall4: entity::Entity = entity::Entity::new(10, num, [0.0, 0.0, 0.0, 1.0]);
+        test_walls.push(test_wall);
+        test_walls.push(test_wall2);
+        test_walls.push(test_wall3);
+        test_walls.push(test_wall4);
+    }
+    let mut current_level: board::Board = board::Board::new(player, vec![first_box], vec![first_goal], test_walls); 
 
     let mut events = Events::new(EventSettings::new());
     while let Some(e) = events.next(&mut window) {
@@ -36,7 +47,7 @@ fn main() {
                 player_y as f64 * TILE_SIZE
             );
             rectangle(current_level.get_player().get_color(),
-                [0.0, 0.0, TILE_SIZE, TILE_SIZE],
+                TILE_RECT,
                 trans,
                 g);
 
@@ -48,7 +59,7 @@ fn main() {
                     moveable_box_y as f64 * TILE_SIZE
                 );
                 rectangle(moveable_box.get_color(),
-                    [0.0, 0.0, TILE_SIZE, TILE_SIZE],
+                    TILE_RECT,
                     trans,
                     g);
             }
@@ -61,7 +72,7 @@ fn main() {
                     game_goal_y as f64 * TILE_SIZE
                 );
                 rectangle(game_goal.get_color(),
-                    [0.0, 0.0, TILE_SIZE, TILE_SIZE],
+                    TILE_RECT,
                     trans,
                     g)
             }
@@ -74,7 +85,7 @@ fn main() {
                     board_wall_y as f64 * TILE_SIZE
                 );
                 rectangle(board_wall.get_color(),
-                    [0.0, 0.0, TILE_SIZE, TILE_SIZE],
+                    TILE_RECT,
                     trans,
                     g)
             }
