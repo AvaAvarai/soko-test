@@ -1,12 +1,13 @@
 pub struct Board {
     board: Vec<Vec<char>>,
     player: (usize, usize),
-    goals: Vec<(usize, usize)>
+    goals: Vec<(usize, usize)>,
+    moves_made: i32
 }
 
 impl Board {
-    pub fn new(board: Vec<Vec<char>>, player: (usize, usize), goals: Vec<(usize, usize)>) -> Self {
-        Board {board, player, goals}
+    pub fn new(board: Vec<Vec<char>>, player: (usize, usize), goals: Vec<(usize, usize)>, moves_made: i32) -> Self {
+        Board {board, player, goals, moves_made}
     }
 
     pub fn get_goals(&self) -> &Vec<(usize, usize)> {
@@ -15,6 +16,10 @@ impl Board {
 
     pub fn get_board(&self) -> &Vec<Vec<char>> {
         &self.board
+    }
+
+    pub fn get_moves_made(&self) -> &i32 {
+        &self.moves_made
     }
 
     pub fn move_player(&mut self, dx: i32, dy: i32) {
@@ -30,12 +35,14 @@ impl Board {
                     self.board[test_coords.0][test_coords.1] = 'P';
                     self.board[box_test_coords.0][box_test_coords.1] = 'B';
                     self.player = test_coords;
+                    self.moves_made += 1;
                 }
             },
             _ => {
                 self.board[self.player.0][self.player.1] = '.';
                 self.board[test_coords.0][test_coords.1] = 'P';
                 self.player = test_coords;
+                self.moves_made += 1;
             }
         }
     }

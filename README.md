@@ -16,7 +16,7 @@ Both my first Rust and my first Piston project, an attempt at prototyping a turn
 - **v0.1.0** -- Windowing and Movement Prototyping  
 - **v0.1.1** -- First x86-64-pc-windows binary  
 - **v0.2.0** -- Entity Interactions: Player-Wall Collision, Player-Box Movement, Box-Goal Notification
-- **v0.3.0** -- (WIP) Level Progression, Level Loading
+- **v0.3.0** -- (WIP) Level Completion, Level Progression, Level Loading
 
 ## Running From Binary
 

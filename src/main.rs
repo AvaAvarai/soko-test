@@ -1,5 +1,6 @@
-//! An attempt at creating a Sokoban-style puzzle game in Rust with the Piston game engine. 
+//! An attempt at prototyping a turn-based Sokoban-styled puzzle game with Rust and the Piston game engine.
 extern crate piston_window;
+extern crate find_folder;
 
 use piston_window::*;
 
@@ -10,7 +11,7 @@ const TILE_RECT: [f64; 4] = [0.0, 0.0, TILE_SIZE, TILE_SIZE];
 
 fn main() {
     let opengl = OpenGL::V3_2;
-    let mut window: PistonWindow = WindowSettings::new("soko-test", [512; 2])
+    let mut window: PistonWindow = WindowSettings::new("soko-test", [480, 480])
         .exit_on_esc(true)
         .graphics_api(opengl)
         .build()
@@ -31,11 +32,14 @@ fn main() {
         }   
     }
 
-    let mut current_level: board::Board = board::Board::new(test_level, (2, 2), vec![(4, 4), (6, 4)]); 
+    let mut current_level: board::Board = board::Board::new(test_level, (2, 2), vec![(4, 4), (6, 4)], 0);
+    let assets = find_folder::Search::ParentsThenKids(3, 3).for_folder("assets").unwrap();
 
+    let mut glyphs = window.load_font(assets.join("PressStart2P-Regular.ttf")).unwrap();
+  
     let mut events = Events::new(EventSettings::new());
     while let Some(e) = events.next(&mut window) {
-        window.draw_2d(&e, |c, g, _| {
+        window.draw_2d(&e, |c, g, d| {
             clear([0.0, 0.0, 1.0, 1.0], g);
 
             let current_board = current_level.get_board();
@@ -46,7 +50,6 @@ fn main() {
                 );
                 rectangle([1.0, 0.0, 0.0, 1.0], TILE_RECT, trans, g);
             }            
-
 
             for (i, row) in current_board.iter().enumerate() {
                 for (q, col) in row.iter().enumerate() {
@@ -64,6 +67,17 @@ fn main() {
                     rectangle(color, TILE_RECT, trans, g);
                 }
             }
+
+            let transform = c.transform.trans(10.0, 400.0);
+
+            text::Text::new_color([0.0, 1.0, 0.0, 1.0], 18).draw(
+                &format!("Moves Made: {}", current_level.get_moves_made().to_string()),
+                &mut glyphs,
+                &c.draw_state,
+                transform, g
+            ).unwrap();
+
+            glyphs.factory.encoder.flush(d);
         });
 
         if let Some(k) = e.button_args() {
