@@ -8,8 +8,8 @@ Both my first Rust and my first Piston project, an attempt at prototyping a turn
 
 ## Requirements
 
-- To Run -- OpenGL v3.2 or better.
-- To Compile -- Rust, Cargo package manager, Possible C libraries as required by Piston.
+- **To Run** -- OpenGL v3.2 or better.
+- **To Compile** -- Rust, Cargo package manager, Possible C libraries as required by Piston.
 
 ## Changelog
 
@@ -18,20 +18,23 @@ Both my first Rust and my first Piston project, an attempt at prototyping a turn
 - **v0.2.0** -- Entity Interactions: Player-Wall Collision, Player-Box Movement, Box-Goal Notification
 - **v0.3.0** -- (WIP) Level Progression, Level Loading
 
-## Running With Binary
+## Running From Binary
 
 - Donwload the binary for your system from your chosen release.
 - Run the binary, all binaries should run natively.
 
 **Current Dev Platform Focus:** *x86_64-pc-windows*
 
-## Running Without Binary
+## Running From Source
 
 **Requires both Rust and the Cargo package manager and possible C libraries as required by Piston.**
 
-```bash
-cargo run
-```
+- Clone or download the repo to your system.
+- Navigate to the project root, '.\src\', in your favorite shell.
+- Run with:
+    ```bash
+    cargo run
+    ```
 
 ## License
 

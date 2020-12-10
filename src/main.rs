@@ -20,7 +20,9 @@ fn main() {
     // Test Level
     let player: entity::Entity = entity::Entity::new(2, 2, [1.0; 4]);
     let first_box: entity::Entity = entity::Entity::new(6, 2, [0.0, 1.0, 0.0, 1.0]);
+    let second_box: entity::Entity = entity::Entity::new(3, 2, [0.0, 1.0, 0.0, 1.0]);
     let first_goal: entity::Entity = entity::Entity::new(6, 4, [1.0, 0.0, 0.0, 1.0]);
+    let second_goal: entity::Entity = entity::Entity::new(4, 4, [1.0, 0.0, 0.0, 1.0]);
     let mut test_walls = vec![];
     for num in 0..11 {
         let test_wall: entity::Entity = entity::Entity::new(0, num, [0.0, 0.0, 0.0, 1.0]);
@@ -32,7 +34,7 @@ fn main() {
         test_walls.push(test_wall3);
         test_walls.push(test_wall4);
     }
-    let mut current_level: board::Board = board::Board::new(player, vec![first_box], vec![first_goal], test_walls); 
+    let mut current_level: board::Board = board::Board::new(player, vec![first_box, second_box], vec![first_goal, second_goal], test_walls); 
 
     let mut events = Events::new(EventSettings::new());
     while let Some(e) = events.next(&mut window) {

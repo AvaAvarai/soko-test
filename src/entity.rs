@@ -1,3 +1,4 @@
+#[derive(Clone)]
 pub struct Entity {
     x: i32,
     y: i32,
@@ -16,6 +17,14 @@ impl Entity {
 
     pub fn get_coords(&self) ->  (i32, i32) {
         (self.x, self.y)
+    }
+
+    pub fn get_x(&self) -> i32 {
+        self.x
+    }
+
+    pub fn get_y(&self) -> i32 {
+        self.y
     }
 
     pub fn get_color(&self) -> [f32; 4] {

@@ -32,20 +32,34 @@ impl Board {
         }
 
         // Player-Box Movement
+        let test_boxes = &self.boxes.clone();
+        let test_walls = &self.walls.clone();
         for moveable_box in self.boxes.iter_mut() {
             let box_coords = moveable_box.get_coords();
             if test_coords == box_coords {
                 let mut box_test_coords = moveable_box.get_coords();
                 box_test_coords.0 += dx;
                 box_test_coords.1 += dy;
-                for wall in self.walls.iter_mut() {
+                for wall in self.walls.iter() {
                     let wall_coords = wall.get_coords();
                     if box_test_coords == wall_coords {
                         return
                     }
                 }
+                for moveable_box in test_boxes {
+                    if moveable_box.get_x() == box_test_coords.0 && moveable_box.get_y() == box_test_coords.1 {
+                        return
+                    }
+                }
+                for wall in test_walls {
+                    if wall.get_x() == box_test_coords.0 && wall.get_y() == box_test_coords.1 {
+                        return
+                    }
+                }
                 moveable_box.move_self(dx, dy);
-                for goal in self.goals.iter_mut() {
+                
+                
+                for goal in self.goals.iter() {
                     let goal_coords = goal.get_coords();
                     if box_test_coords == goal_coords {
                         need_recheck = true;
@@ -63,6 +77,21 @@ impl Board {
 
         // Player-Empty Movement
         self.player.move_self(dx, dy);
+    }
+
+    // Possible replacement for cloning on lines 35-36.
+    pub fn is_blocked(&self, x: i32, y: i32) -> bool {
+        for moveable_box in &self.boxes {
+            if moveable_box.get_x() == x && moveable_box.get_y() == y {
+                return true
+            }
+        }
+        for wall in self.get_walls() {
+            if wall.get_x() == x && wall.get_y() == y {
+                return true
+            }
+        }
+        return false
     }
 
     pub fn recheck_boxes(&self) -> bool {
