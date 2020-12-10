@@ -17,43 +17,67 @@ impl Board {
     }
 
     pub fn move_player(&mut self, dx: i32, dy: i32) {
-        let (mut test_x, mut test_y) = self.get_player().get_coords();
-        test_x += dx;
-        test_y += dy;
+        let mut need_recheck = false;
+
+        let mut test_coords = self.get_player().get_coords();
+        test_coords.0 += dx;
+        test_coords.1 += dy;
 
         // Player-Wall Collision
         for wall in self.get_walls() {
-            let (wall_x, wall_y) = wall.get_coords();
-            if test_x == wall_x && test_y == wall_y {
+            let wall_coords = wall.get_coords();
+            if test_coords == wall_coords {
                 return
             }
         }
 
         // Player-Box Movement
         for moveable_box in self.boxes.iter_mut() {
-            let (box_x, box_y) = moveable_box.get_coords();
-            if test_x == box_x && test_y == box_y {
-                let (mut box_test_x, mut box_test_y) = moveable_box.get_coords();
-                box_test_x += dx;
-                box_test_y += dy;
+            let box_coords = moveable_box.get_coords();
+            if test_coords == box_coords {
+                let mut box_test_coords = moveable_box.get_coords();
+                box_test_coords.0 += dx;
+                box_test_coords.1 += dy;
                 for wall in self.walls.iter_mut() {
-                    let (wall_x, wall_y) = wall.get_coords();
-                    if box_test_x == wall_x && box_test_y == wall_y {
+                    let wall_coords = wall.get_coords();
+                    if box_test_coords == wall_coords {
                         return
                     }
                 }
                 moveable_box.move_self(dx, dy);
                 for goal in self.goals.iter_mut() {
-                    let (goal_x, goal_y) = goal.get_coords();
-                    if box_test_x == goal_x && box_test_y == goal_y {
-                        println!("BOX MET GOAL!");
+                    let goal_coords = goal.get_coords();
+                    if box_test_coords == goal_coords {
+                        need_recheck = true;
                     }
                 }
             }
         }
 
+        if need_recheck {
+            if self.recheck_boxes() {
+                // Trigger Next Level
+                println!("Level Complete.");
+            }
+        }
+
         // Player-Empty Movement
         self.player.move_self(dx, dy);
+    }
+
+    pub fn recheck_boxes(&self) -> bool {
+        let mut num = 0;
+        for goal in self.goals.iter() {
+            for moveable_box in self.boxes.iter() {
+                if goal.get_coords() == moveable_box.get_coords() {
+                    num+=1;
+                }
+            }
+        }
+        if num == self.boxes.len() {
+            return true
+        }
+        false
     }
 
     pub fn get_boxes(&self) -> &Vec<entity::Entity> {
