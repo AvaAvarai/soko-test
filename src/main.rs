@@ -32,7 +32,7 @@ fn main() {
         }   
     }
 
-    let mut current_level: board::Board = board::Board::new(test_level, (2, 2), vec![(4, 4), (6, 4)], 0);
+    let mut current_level: board::Board = board::Board::new(test_level, (2, 2), vec![(4, 4), (6, 4)], 11, 0, false);
     let assets = find_folder::Search::ParentsThenKids(3, 3).for_folder("assets").unwrap();
 
     let mut glyphs = window.load_font(assets.join("PressStart2P-Regular.ttf")).unwrap();
@@ -71,11 +71,29 @@ fn main() {
             let transform = c.transform.trans(10.0, 400.0);
 
             text::Text::new_color([0.0, 1.0, 0.0, 1.0], 18).draw(
-                &format!("Moves Made: {}", current_level.get_moves_made().to_string()),
+                &format!("Moves: {}", current_level.get_moves_made().to_string()),
                 &mut glyphs,
                 &c.draw_state,
                 transform, g
             ).unwrap();
+
+            let transform = c.transform.trans(10.0, 440.0);
+            text::Text::new_color([0.0, 1.0, 0.0, 1.0], 18).draw(
+                &format!("Goal: {}", current_level.get_moves_goal().to_string()),
+                &mut glyphs,
+                &c.draw_state,
+                transform, g
+            ).unwrap();
+
+            if *current_level.get_level_solved() {
+                let transform = c.transform.trans(50.0, 60.0);
+                text::Text::new_color([0.0, 1.0, 0.0, 1.0], 18).draw(
+                    "Level Done!",
+                    &mut glyphs,
+                    &c.draw_state,
+                    transform, g
+                ).unwrap();
+            } 
 
             glyphs.factory.encoder.flush(d);
         });
